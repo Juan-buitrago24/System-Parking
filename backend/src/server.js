@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
+import vehicleRoutes from "./routes/vehicleRoutes.js";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
     message: "🚗 System Parking API v1.0",
     endpoints: {
       auth: "/api/auth",
+      vehicles: "/api/vehicles",
       docs: "/api/docs"
     }
   });
@@ -28,6 +30,9 @@ app.get("/", (req, res) => {
 
 // Rutas de autenticación
 app.use("/api/auth", authRoutes);
+
+// Rutas de vehículos
+app.use("/api/vehicles", vehicleRoutes);
 
 // Manejo de rutas no encontradas
 app.use("*", (req, res) => {
