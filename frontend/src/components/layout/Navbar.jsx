@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, Car } from 'lucide-react';
+import { LogOut, User, Menu, X, Car, LogIn, ParkingCircle, List } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
@@ -29,7 +29,22 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
+            <Link to="/vehicles/entry" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+              <LogIn className="w-4 h-4 mr-1" />
+              Entrada
+            </Link>
+            
+            <Link to="/vehicles/exit" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+              <LogOut className="w-4 h-4 mr-1" />
+              Salida
+            </Link>
+            
+            <Link to="/vehicles/active" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+              <List className="w-4 h-4 mr-1" />
+              Activos
+            </Link>
+
             <Link
               to="/profile"
               className="flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
