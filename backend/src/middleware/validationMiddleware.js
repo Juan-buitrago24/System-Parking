@@ -143,3 +143,56 @@ export const validateUpdateProfile = (req, res, next) => {
 
   next();
 };
+
+// Validaciones para vehículos
+export const validateVehicleEntry = (req, res, next) => {
+  const { plate, type, ownerName } = req.body;
+  const errors = [];
+
+  // Validar placa
+  if (!plate || !plate.trim()) {
+    errors.push("La placa es requerida.");
+  } else {
+    // Formato básico de placa (puede ajustarse según el país)
+    const plateRegex = /^[A-Z0-9\-]{3,10}$/i;
+    if (!plateRegex.test(plate.trim())) {
+      errors.push("La placa no tiene un formato válido.");
+    }
+  }
+
+  // Validar tipo de vehículo
+  const validTypes = ["CARRO", "MOTO", "CAMIONETA", "CAMION"];
+  if (!type || !type.trim()) {
+    errors.push("El tipo de vehículo es requerido.");
+  } else if (!validTypes.includes(type)) {
+    errors.push(`El tipo debe ser uno de: ${validTypes.join(", ")}`);
+  }
+
+  // Validar nombre del propietario
+  if (!ownerName || !ownerName.trim()) {
+    errors.push("El nombre del propietario es requerido.");
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Errores de validación",
+      errors
+    });
+  }
+
+  next();
+};
+
+export const validateVehicleExit = (req, res, next) => {
+  const { plate } = req.params;
+
+  if (!plate || !plate.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "La placa es requerida."
+    });
+  }
+
+  next();
+};
