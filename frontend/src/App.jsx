@@ -11,6 +11,9 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyAccount from './pages/VerifyAccount';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import VehicleEntry from './pages/VehicleEntry';
+import VehicleExit from './pages/VehicleExit';
+import ActiveVehicles from './pages/ActiveVehicles';
 
 function App() {
   return (
@@ -38,6 +41,30 @@ function App() {
             element={
               <PrivateRoute>
                 <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vehicles/entry"
+            element={
+              <PrivateRoute>
+                <VehicleEntry />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vehicles/exit"
+            element={
+              <PrivateRoute>
+                <VehicleExit />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vehicles/active"
+            element={
+              <PrivateRoute>
+                <ActiveVehicles />
               </PrivateRoute>
             }
           />
