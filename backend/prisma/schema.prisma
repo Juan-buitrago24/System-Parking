@@ -15,6 +15,18 @@ enum UserRole {
   EMPLOYEE
 }
 
+enum VehicleType {
+  CARRO
+  MOTO
+  CAMIONETA
+  CAMION
+}
+
+enum VehicleStatus {
+  ACTIVO
+  INACTIVO
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -38,5 +50,48 @@ model User {
   updatedAt DateTime @updatedAt
   lastLogin DateTime?
   
+  // Relación con vehículos registrados
+  vehicles Vehicle[]
+  
   @@map("users")
+}
+
+model Vehicle {
+  id        Int      @id @default(autoincrement())
+  
+  // Información del vehículo
+  plate        String   @unique // Placa única
+  type         VehicleType
+  color        String?
+  brand        String?  // Marca
+  model        String?  // Modelo
+  
+  // Información del propietario
+  ownerName    String
+  ownerPhone   String?
+  ownerEmail   String?
+  
+  // Control de entrada/salida
+  entryTime    DateTime  @default(now())
+  exitTime     DateTime?
+  parkingSpace String?   // Ej: A-15, B-08
+  
+  // Estado
+  status       VehicleStatus @default(ACTIVO)
+  
+  // Observaciones
+  observations String?
+  
+  // Usuario que registró
+  registeredById Int
+  registeredBy   User @relation(fields: [registeredById], references: [id])
+  
+  // Campos de auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("vehicles")
+  @@index([plate])
+  @@index([status])
+  @@index([entryTime])
 }
