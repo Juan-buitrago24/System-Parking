@@ -36,6 +36,24 @@ export const registerEntry = async (req, res) => {
       });
     }
 
+    // Verificar si el espacio de parqueo ya está ocupado
+    if (parkingSpace && parkingSpace.trim()) {
+      const occupiedSpace = await prisma.vehicle.findFirst({
+        where: {
+          parkingSpace: parkingSpace.trim().toUpperCase(),
+          status: "ACTIVO"
+        }
+      });
+
+      if (occupiedSpace) {
+        return res.status(400).json({
+          success: false,
+          message: `El espacio ${parkingSpace} ya está ocupado por el vehículo ${occupiedSpace.plate}.`,
+          data: occupiedSpace
+        });
+      }
+    }
+
     // Registrar entrada
     const vehicle = await prisma.vehicle.create({
       data: {

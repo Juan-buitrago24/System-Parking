@@ -60,7 +60,7 @@ model Vehicle {
   id        Int      @id @default(autoincrement())
   
   // Información del vehículo
-  plate        String   @unique // Placa única
+  plate        String   // Placa (permite múltiples registros para historial)
   type         VehicleType
   color        String?
   brand        String?  // Marca
