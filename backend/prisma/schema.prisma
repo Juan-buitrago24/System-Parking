@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  EMPLOYEE
+}
+
+enum VehicleType {
+  CARRO
+  MOTO
+  CAMIONETA
+  CAMION
+}
+
+enum VehicleStatus {
+  ACTIVO
+  INACTIVO
+}
+
+// Nuevos enums para espacios de parqueadero
+enum ParkingSpaceType {
+  COMPACT
+  LARGE
+  HANDICAPPED
+  MOTORCYCLE
+}
+
+enum ParkingSpaceState {
+  DISPONIBLE
+  OCUPADO
+  RESERVADO
+  MANTENIMIENTO
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  role      UserRole @default(EMPLOYEE)
+
+  // Campos para verificación de cuenta
+  isVerified          Boolean   @default(false)
+  verificationToken   String?   @unique
+  verificationExpires DateTime?
+
+  // Campos para recuperación de contraseña
+  resetPasswordToken   String?   @unique
+  resetPasswordExpires DateTime?
+
+  // Campos de auditoría
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lastLogin DateTime?
+
+  // Relación con vehículos registrados
+  vehicles Vehicle[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id Int @id @default(autoincrement())
+
+  // Información del vehículo
+  plate String // Placa (permite múltiples registros para historial)
+  type  VehicleType
+  color String?
+  brand String? // Marca
+  model String? // Modelo
+
+  // Información del propietario
+  ownerName  String
+  ownerPhone String?
+  ownerEmail String?
+
+  // Control de entrada/salida
+  entryTime       DateTime      @default(now())
+  exitTime        DateTime?
+  parkingSpace    String? // Ej: A-15, B-08  (mantengo para compatibilidad)
+  parkingSpaceId  Int? // FK opcional hacia ParkingSpace
+  parkingSpaceRel ParkingSpace? @relation(fields: [parkingSpaceId], references: [id])
+
+  // Estado
+  status VehicleStatus @default(ACTIVO)
+
+  // Observaciones
+  observations String?
+
+  // Usuario que registró
+  registeredById Int
+  registeredBy   User @relation(fields: [registeredById], references: [id])
+
+  // Campos de auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([plate])
+  @@index([status])
+  @@index([entryTime])
+  @@map("vehicles")
+}
+
+// Modelo nuevo: ParkingSpace
+model ParkingSpace {
+  id        Int               @id @default(autoincrement())
+  number    String            @unique // Ej: A-15
+  type      ParkingSpaceType
+  state     ParkingSpaceState @default(DISPONIBLE)
+  row       Int?
+  col       Int?
+  vehicleId Int?
+  // Relación inversa: Vehicle puede apuntar a este espacio mediante parkingSpaceId
+  // No agregamos relation field aquí para evitar conflictos; la relación está en Vehicle
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  Vehicle   Vehicle[]
+
+  @@map("parking_spaces")
+}
