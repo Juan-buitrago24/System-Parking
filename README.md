@@ -269,11 +269,13 @@ Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autores
 
 **Juan Buitrago**
 - GitHub: [@Juan-buitrago24](https://github.com/Juan-buitrago24)
 
+**Kevin Coy**
+- GitHub: [@Kcoy730](https://github.com/Kcoy730)
 ---
 
 ## ⭐ Agradecimientos
