@@ -1,32 +1,71 @@
 # System Parking 🚗
 
-Plataforma moderna de administración de parqueaderos con autenticación completa, control de ocupación, facturación y reportes de ingresos. Sistema full-stack desarrollado con Node.js/Express/PostgreSQL en el backend y React/Vite/Tailwind en el frontend.
+Sistema completo de administración de parqueaderos con autenticación, gestión de vehículos, control de espacios, facturación automática y reportes de ingresos. Plataforma full-stack desarrollada con Node.js/Express/PostgreSQL en el backend y React/Vite/Tailwind en el frontend.
 
-![Status](https://img.shields.io/badge/Status-Sprint%201%20Completado-success)
+![Status](https://img.shields.io/badge/Status-5%20Sprints%20Completados-success)
 ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green)
 ![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL-blue)
+![ORM](https://img.shields.io/badge/ORM-Prisma-informational)
 
 ---
 
 ## 🎯 Descripción
 
-Sistema de gestión integral de parqueaderos que permite administrar vehículos, espacios, tarifas y generar reportes. El proyecto sigue una arquitectura moderna con API REST, autenticación JWT, y una interfaz de usuario atractiva y responsive.
+Sistema de gestión integral de parqueaderos que permite:
+- 🔐 Autenticación completa de usuarios
+- 🚘 Registro de entrada/salida de vehículos
+- 🅿️ Control visual de espacios de parqueo
+- 💰 Facturación automática con múltiples tarifas
+- 📊 Reportes detallados de ingresos y operaciones
+- 📤 Exportación de datos a CSV
 
 ---
 
-## ✨ Sprint 1 - Sistema de Autenticación ✅
+## ✨ Funcionalidades por Sprint
 
-### Funcionalidades Implementadas
+### Sprint 1 - Sistema de Autenticación ✅
+- ✅ Login con JWT y roles (ADMIN/EMPLOYEE)
+- ✅ Registro con validación en tiempo real
+- ✅ Verificación de cuenta por email
+- ✅ Recuperación y reset de contraseña
+- ✅ Gestión de perfil y cambio de contraseña
+- ✅ Protección de rutas con middleware
 
-- ✅ **Login de usuario** - Autenticación con JWT y validación
-- ✅ **Registro de cuenta** - Con validación de datos en tiempo real
-- ✅ **Verificación de cuenta** - Envío de email con token
-- ✅ **Recuperación de contraseña** - Sistema completo de reset
-- ✅ **Actualización de perfil** - Datos personales y teléfono
-- ✅ **Cambio de contraseña** - Con validación de contraseña actual
-- ✅ **Cierre de sesión** - Limpieza segura de sesión
-- ✅ **Diseño moderno y responsive** - Glassmorphism y animaciones
+### Sprint 2 - Gestión de Vehículos ✅
+- ✅ Registro de entrada con datos del propietario
+- ✅ Registro de salida con cálculo de duración
+- ✅ Lista de vehículos activos en tiempo real
+- ✅ Búsqueda de vehículos por placa
+- ✅ Historial completo de entradas/salidas
+- ✅ Dashboard con estadísticas
+
+### Sprint 3 - Control de Espacios ✅
+- ✅ Gestión visual de espacios (grid interactivo)
+- ✅ Tipos de espacio (COMPACT, LARGE, HANDICAPPED)
+- ✅ Estados (DISPONIBLE, OCUPADO, MANTENIMIENTO)
+- ✅ Asignación automática de espacios
+- ✅ Asignación manual con validaciones
+- ✅ Liberación de espacios
+
+### Sprint 4 - Sistema de Facturación ✅
+- ✅ Múltiples tipos de tarifa (POR_HORA, POR_DIA, FRACCION, MENSUAL)
+- ✅ Cálculo automático según duración
+- ✅ Selección inteligente de mejor tarifa
+- ✅ Descuentos (porcentaje o monto fijo)
+- ✅ Métodos de pago (EFECTIVO, TARJETA, TRANSFERENCIA)
+- ✅ Generación automática de recibos
+- ✅ Gestión de tarifas (solo admin)
+- ✅ Procesamiento de reembolsos
+
+### Sprint 5 - Reportes y Analytics ✅
+- ✅ Resumen general (ingresos, ticket promedio)
+- ✅ Ingresos diarios con filtros de fecha
+- ✅ Análisis por tipo de vehículo
+- ✅ Análisis por método de pago
+- ✅ Top 10 vehículos más frecuentes
+- ✅ Exportación de reportes a CSV
+- ✅ Filtros personalizables
 
 ---
 
@@ -51,11 +90,21 @@ cd System-Parking
 cd backend
 npm install
 cp .env.example .env
-# Editar .env con tus credenciales
+# Editar .env con tus credenciales de PostgreSQL y Gmail
 npx prisma generate
-npx prisma migrate dev --name init
+npx prisma migrate dev
+npx prisma db seed  # Crea espacios y tarifas iniciales
+node scripts/createAdmin.js  # Crea usuario administrador
 npm run dev
 ```
+
+**Credenciales por defecto:**
+```
+Email:    admin@parking.com
+Password: Admin123!
+Rol:      ADMIN
+```
+⚠️ **Cambia la contraseña después del primer login**
 
 ### 3. Configurar Frontend
 
@@ -130,24 +179,76 @@ System-Parking/
 
 ## 📊 Endpoints de la API
 
-### Autenticación (Públicos)
+### Autenticación
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Registrar nuevo usuario |
-| POST | `/api/auth/login` | Iniciar sesión |
-| GET | `/api/auth/verify/:token` | Verificar cuenta |
-| POST | `/api/auth/forgot-password` | Solicitar reset |
-| POST | `/api/auth/reset-password/:token` | Restablecer contraseña |
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| POST | `/api/auth/register` | Registrar nuevo usuario | Público |
+| POST | `/api/auth/login` | Iniciar sesión | Público |
+| GET | `/api/auth/verify/:token` | Verificar cuenta | Público |
+| POST | `/api/auth/forgot-password` | Solicitar reset | Público |
+| POST | `/api/auth/reset-password/:token` | Restablecer contraseña | Público |
+| GET | `/api/auth/profile` | Obtener perfil | Privado |
+| PUT | `/api/auth/profile` | Actualizar perfil | Privado |
+| PUT | `/api/auth/change-password` | Cambiar contraseña | Privado |
+| POST | `/api/auth/logout` | Cerrar sesión | Privado |
 
-### Perfil (Protegidos)
+### Vehículos
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/api/auth/profile` | Obtener perfil |
-| PUT | `/api/auth/profile` | Actualizar perfil |
-| PUT | `/api/auth/change-password` | Cambiar contraseña |
-| POST | `/api/auth/logout` | Cerrar sesión |
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| POST | `/api/vehicles/entry` | Registrar entrada | Privado |
+| POST | `/api/vehicles/exit` | Registrar salida | Privado |
+| GET | `/api/vehicles/active` | Listar vehículos activos | Privado |
+| GET | `/api/vehicles/search/:plate` | Buscar por placa | Privado |
+| GET | `/api/vehicles/history` | Historial completo | Privado |
+| GET | `/api/vehicles/stats` | Estadísticas | Privado |
+
+### Espacios de Parqueo
+
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| GET | `/api/parking-spaces` | Listar todos los espacios | Privado |
+| GET | `/api/parking-spaces/:id` | Obtener espacio por ID | Privado |
+| POST | `/api/parking-spaces` | Crear espacio | Privado |
+| PUT | `/api/parking-spaces/:id` | Actualizar espacio | Privado |
+| DELETE | `/api/parking-spaces/:id` | Eliminar espacio | Privado |
+| POST | `/api/parking-spaces/auto-assign` | Asignar automáticamente | Privado |
+| POST | `/api/parking-spaces/assign` | Asignar manualmente | Privado |
+| POST | `/api/parking-spaces/release/:id` | Liberar espacio | Privado |
+
+### Tarifas
+
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| GET | `/api/rates` | Listar todas las tarifas | Privado |
+| GET | `/api/rates/:id` | Obtener tarifa por ID | Privado |
+| GET | `/api/rates/active/:vehicleType` | Tarifas activas por tipo | Privado |
+| POST | `/api/rates` | Crear tarifa | Admin |
+| PUT | `/api/rates/:id` | Actualizar tarifa | Admin |
+| DELETE | `/api/rates/:id` | Desactivar tarifa | Admin |
+
+### Pagos
+
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| POST | `/api/payments/calculate` | Calcular monto | Privado |
+| POST | `/api/payments` | Registrar pago y salida | Privado |
+| GET | `/api/payments` | Listar pagos | Privado |
+| GET | `/api/payments/:id` | Obtener pago por ID | Privado |
+| POST | `/api/payments/:id/refund` | Procesar reembolso | Admin |
+| GET | `/api/payments/stats/summary` | Estadísticas de pagos | Privado |
+
+### Reportes
+
+| Método | Endpoint | Descripción | Acceso |
+|--------|----------|-------------|--------|
+| GET | `/api/reports/daily-income` | Ingresos diarios | Privado |
+| GET | `/api/reports/by-vehicle-type` | Por tipo de vehículo | Privado |
+| GET | `/api/reports/by-payment-method` | Por método de pago | Privado |
+| GET | `/api/reports/summary` | Resumen general | Privado |
+| GET | `/api/reports/payments-list` | Lista para exportar | Privado |
+| GET | `/api/reports/top-vehicles` | Top 10 frecuentes | Privado |
 
 ---
 
@@ -166,29 +267,42 @@ System-Parking/
 ## 🗺️ Roadmap del Proyecto
 
 ### ✅ Sprint 1: Autenticación (Completado)
-- Login, Registro, Verificación
-- Recuperación de contraseña
-- Gestión de perfil
+- ✅ Login, Registro, Verificación por email
+- ✅ Recuperación de contraseña con tokens
+- ✅ Gestión de perfil y cambio de contraseña
+- ✅ Roles de usuario (ADMIN, EMPLOYEE)
 
-### 🔄 Sprint 2: Gestión de Vehículos (Próximo)
-- Registro de entrada/salida
-- Búsqueda y filtrado
-- Historial de vehículos
+### ✅ Sprint 2: Gestión de Vehículos (Completado)
+- ✅ Registro de entrada con placa y tipo
+- ✅ Registro de salida con cálculo automático
+- ✅ Búsqueda y filtrado de vehículos
+- ✅ Historial completo con estadísticas
+- ✅ Validación de placas duplicadas
 
-### 📅 Sprint 3: Control de Espacios
-- Mapa visual del parqueadero
-- Asignación automática de espacios
-- Estado en tiempo real
+### ✅ Sprint 3: Control de Espacios (Completado)
+- ✅ CRUD completo de espacios de parqueo
+- ✅ Asignación automática por tipo de vehículo
+- ✅ Estado en tiempo real (DISPONIBLE, OCUPADO, MANTENIMIENTO)
+- ✅ Gestión de capacidad y disponibilidad
+- ✅ Dashboard con métricas de ocupación
 
-### 💰 Sprint 4: Facturación
-- Cálculo automático de tarifas
-- Generación de recibos
-- Historial de pagos
+### ✅ Sprint 4: Facturación (Completado)
+- ✅ Sistema de tarifas por tipo de vehículo
+- ✅ Tarifas por hora, día, mes
+- ✅ Cálculo automático con descuentos
+- ✅ Generación de recibos únicos
+- ✅ Registro de pagos (EFECTIVO, TARJETA, QR)
+- ✅ Sistema de reembolsos (solo ADMIN)
+- ✅ Historial completo de transacciones
 
-### 📈 Sprint 5: Reportes y Análisis
-- Reportes de ingresos diarios/mensuales
-- Estadísticas de ocupación
-- Exportación de datos (PDF, Excel)
+### ✅ Sprint 5: Reportes y Análisis (Completado)
+- ✅ Reporte de ingresos diarios con gráficos
+- ✅ Análisis por tipo de vehículo
+- ✅ Análisis por método de pago
+- ✅ Dashboard de métricas generales
+- ✅ Top 10 vehículos más frecuentes
+- ✅ Exportación de datos a CSV
+- ✅ Filtros por rango de fechas
 
 ---
 
@@ -234,7 +348,57 @@ VITE_API_URL=http://localhost:3000/api
 
 ## 🐛 Solución de Problemas
 
-Ver la [Guía de Inicio](GUIA_INICIO.md) para soluciones a problemas comunes.
+### Error de Conexión a Base de Datos
+**Problema:** `Error: Can't reach database server`
+```bash
+# Solución: Verificar que PostgreSQL esté corriendo
+# Windows: Servicios > PostgreSQL
+# Verificar DATABASE_URL en .env
+```
+
+### Error: "No rates found for vehicle type"
+**Problema:** No hay tarifas configuradas
+```bash
+# Solución: Ejecutar el seed de tarifas
+cd backend
+npm run seed
+```
+
+### Puerto en Uso
+**Problema:** `Error: listen EADDRINUSE: address already in use :::3000`
+```bash
+# Solución: Cambiar el puerto en .env o matar el proceso
+# Windows PowerShell:
+Get-Process -Id (Get-NetTCPConnection -LocalPort 3000).OwningProcess | Stop-Process
+```
+
+### Error en Migraciones de Prisma
+**Problema:** Cambios en el schema no se reflejan
+```bash
+# Solución: Resetear y migrar de nuevo
+cd backend
+npx prisma migrate reset
+npx prisma migrate dev --name init
+npm run seed
+```
+
+### Emails No Se Envían
+**Problema:** Verificación por email no llega
+```bash
+# Solución:
+# 1. Verificar RESEND_API_KEY en .env
+# 2. Verificar dominio del from_email
+# 3. Revisar logs del servidor para errores de Resend
+```
+
+### Frontend No Conecta con Backend
+**Problema:** Error de CORS o conexión rechazada
+```bash
+# Solución:
+# 1. Verificar que el backend esté corriendo en puerto 3000
+# 2. Verificar VITE_API_URL en frontend/.env
+# 3. Verificar cors configurado en backend/src/server.js
+```
 
 ---
 
