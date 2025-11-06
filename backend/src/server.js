@@ -4,6 +4,9 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
 import parkingRoutes from "./routes/parkingRoutes.js";
+import rateRoutes from "./routes/rateRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -25,6 +28,9 @@ app.get("/", (req, res) => {
       auth: "/api/auth",
       vehicles: "/api/vehicles",
       parkingSpaces: "/api/parking-spaces",
+      rates: "/api/rates",
+      payments: "/api/payments",
+      reports: "/api/reports",
       docs: "/api/docs"
     }
   });
@@ -38,6 +44,15 @@ app.use("/api/vehicles", vehicleRoutes);
 
 // Rutas de espacios de parqueo
 app.use("/api/parking-spaces", parkingRoutes);
+
+// Rutas de tarifas
+app.use("/api/rates", rateRoutes);
+
+// Rutas de pagos
+app.use("/api/payments", paymentRoutes);
+
+// Rutas de reportes
+app.use("/api/reports", reportRoutes);
 
 // Manejo de rutas no encontradas
 app.use("*", (req, res) => {

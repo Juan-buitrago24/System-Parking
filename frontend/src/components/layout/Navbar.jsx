@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, Car, LogIn, ParkingCircle, List } from 'lucide-react';
+import { LogOut, User, Menu, X, Car, LogIn, ParkingCircle, List, DollarSign, BarChart3 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
@@ -45,6 +45,18 @@ const Navbar = () => {
               Activos
             </Link>
 
+            <Link to="/reports" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+              <BarChart3 className="w-4 h-4 mr-1" />
+              Reportes
+            </Link>
+
+            {user?.role === 'ADMIN' && (
+              <Link to="/rates" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+                <DollarSign className="w-4 h-4 mr-1" />
+                Tarifas
+              </Link>
+            )}
+
             <Link
               to="/profile"
               className="flex items-center px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
@@ -61,7 +73,7 @@ const Navbar = () => {
               size="sm"
               icon={LogOut}
             >
-              Cerrar Sesión
+              Cerrar Sesion
             </Button>
           </div>
 

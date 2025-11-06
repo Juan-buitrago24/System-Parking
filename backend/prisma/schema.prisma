@@ -41,6 +41,27 @@ enum ParkingSpaceState {
   MANTENIMIENTO
 }
 
+enum RateType {
+  POR_HORA
+  POR_DIA
+  FRACCION
+  MENSUAL
+}
+
+enum PaymentMethod {
+  EFECTIVO
+  TARJETA
+  TRANSFERENCIA
+  OTRO
+}
+
+enum PaymentStatus {
+  PENDIENTE
+  PAGADO
+  REEMBOLSADO
+  AJUSTADO
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -66,6 +87,9 @@ model User {
   
   // Relación con vehículos registrados
   vehicles Vehicle[]
+  
+  // Relación con pagos registrados
+  payments Payment[]
   
   @@map("users")
 }
@@ -102,6 +126,9 @@ model Vehicle {
   registeredById Int
   registeredBy   User @relation(fields: [registeredById], references: [id])
   
+  // Relación con pagos
+  payments Payment[]
+  
   // Campos de auditoría
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -125,4 +152,63 @@ model ParkingSpace {
   Vehicle   Vehicle[]
 
   @@map("parking_spaces")
+}
+
+model Rate {
+  id          Int         @id @default(autoincrement())
+  name        String      // "Tarifa hora - Carro"
+  description String?
+  vehicleType VehicleType
+  rateType    RateType
+  amount      Float       // Precio
+  minTime     Int?        // Tiempo mínimo en minutos
+  isActive    Boolean     @default(true)
+  validFrom   DateTime    @default(now())
+  validUntil  DateTime?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  @@map("rates")
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  
+  // Relación con vehículo
+  vehicleId       Int
+  vehicle         Vehicle       @relation(fields: [vehicleId], references: [id])
+  
+  // Detalles del pago
+  amount          Float
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDIENTE)
+  
+  // Información de cálculo
+  duration        Float         // Horas
+  rateApplied     String        // JSON con info de tarifa usada
+  discount        Float?        @default(0)
+  subtotal        Float
+  
+  // Detalles adicionales
+  notes           String?
+  receiptNumber   String        @unique
+  
+  // Fechas
+  paidAt          DateTime      @default(now())
+  refundedAt      DateTime?
+  refundReason    String?
+  
+  // Usuario que registró
+  registeredById  Int
+  registeredBy    User          @relation(fields: [registeredById], references: [id])
+  
+  // Auditoría
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([vehicleId])
+  @@index([status])
+  @@index([paidAt])
+  @@map("payments")
 }

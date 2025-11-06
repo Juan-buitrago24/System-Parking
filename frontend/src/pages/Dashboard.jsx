@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Spinner from '../components/common/Spinner';
 import vehicleService from '../services/vehicleService';
-import { Car, LogIn, Users, BarChart3, MapPin, RefreshCcw } from 'lucide-react';
+import { Car, LogIn, Users, BarChart3, MapPin, RefreshCcw, DollarSign } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -117,7 +117,7 @@ const Dashboard = () => {
               Acciones Rapidas
             </h2>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className={`grid ${user?.role === 'ADMIN' ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-2'} gap-4`}>
               <Link
                 to="/vehicles/entry"
                 className="p-6 bg-gradient-to-r from-blue-500 to-blue-700 rounded-xl text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center"
@@ -141,6 +141,24 @@ const Dashboard = () => {
                 <BarChart3 className="w-8 h-8 mb-3 mx-auto" />
                 <p className="font-semibold">Ver Activos</p>
               </Link>
+
+              <Link
+                to="/reports"
+                className="p-6 bg-gradient-to-r from-indigo-500 to-indigo-700 rounded-xl text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center"
+              >
+                <BarChart3 className="w-8 h-8 mb-3 mx-auto" />
+                <p className="font-semibold">Reportes</p>
+              </Link>
+
+              {user?.role === 'ADMIN' && (
+                <Link
+                  to="/rates"
+                  className="p-6 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center"
+                >
+                  <DollarSign className="w-8 h-8 mb-3 mx-auto" />
+                  <p className="font-semibold">Gestionar Tarifas</p>
+                </Link>
+              )}
 
               <Link
                 to="/profile"

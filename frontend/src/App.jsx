@@ -15,6 +15,8 @@ import VehicleEntry from './pages/VehicleEntry';
 import VehicleExit from './pages/VehicleExit';
 import ActiveVehicles from './pages/ActiveVehicles';
 import SpacesManagement from './pages/SpacesManagement';
+import RateManagement from './pages/RateManagement';
+import Reports from './pages/Reports';
 
 function App() {
   return (
@@ -74,6 +76,22 @@ function App() {
             element={
               <PrivateRoute>
                 <SpacesManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/rates"
+            element={
+              <PrivateRoute adminOnly>
+                <RateManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <PrivateRoute>
+                <Reports />
               </PrivateRoute>
             }
           />
