@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
+import parkingRoutes from "./routes/parkingRoutes.js";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
     endpoints: {
       auth: "/api/auth",
       vehicles: "/api/vehicles",
+      parkingSpaces: "/api/parking-spaces",
       docs: "/api/docs"
     }
   });
@@ -33,6 +35,9 @@ app.use("/api/auth", authRoutes);
 
 // Rutas de vehículos
 app.use("/api/vehicles", vehicleRoutes);
+
+// Rutas de espacios de parqueo
+app.use("/api/parking-spaces", parkingRoutes);
 
 // Manejo de rutas no encontradas
 app.use("*", (req, res) => {

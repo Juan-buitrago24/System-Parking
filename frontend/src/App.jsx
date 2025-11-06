@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import VehicleEntry from './pages/VehicleEntry';
 import VehicleExit from './pages/VehicleExit';
 import ActiveVehicles from './pages/ActiveVehicles';
+import SpacesManagement from './pages/SpacesManagement';
 
 function App() {
   return (
@@ -65,6 +66,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ActiveVehicles />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/spaces"
+            element={
+              <PrivateRoute>
+                <SpacesManagement />
               </PrivateRoute>
             }
           />

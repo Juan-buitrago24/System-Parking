@@ -27,6 +27,20 @@ enum VehicleStatus {
   INACTIVO
 }
 
+enum ParkingSpaceType {
+  COMPACT
+  LARGE
+  HANDICAPPED
+  MOTORCYCLE
+}
+
+enum ParkingSpaceState {
+  DISPONIBLE
+  OCUPADO
+  RESERVADO
+  MANTENIMIENTO
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -74,7 +88,9 @@ model Vehicle {
   // Control de entrada/salida
   entryTime    DateTime  @default(now())
   exitTime     DateTime?
-  parkingSpace String?   // Ej: A-15, B-08
+  parkingSpace String?   // Ej: A-15, B-08 (mantengo para compatibilidad)
+  parkingSpaceId  Int? // FK opcional hacia ParkingSpace
+  parkingSpaceRel ParkingSpace? @relation(fields: [parkingSpaceId], references: [id])
   
   // Estado
   status       VehicleStatus @default(ACTIVO)
@@ -94,4 +110,19 @@ model Vehicle {
   @@index([plate])
   @@index([status])
   @@index([entryTime])
+}
+
+model ParkingSpace {
+  id        Int               @id @default(autoincrement())
+  number    String            @unique // Ej: A-15
+  type      ParkingSpaceType
+  state     ParkingSpaceState @default(DISPONIBLE)
+  row       Int?
+  col       Int?
+  vehicleId Int?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  Vehicle   Vehicle[]
+
+  @@map("parking_spaces")
 }
