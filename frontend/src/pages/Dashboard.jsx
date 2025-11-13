@@ -218,25 +218,29 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Info Banner */}
+        {/* Sistema Completado Banner */}
         <div className="mt-8 glass rounded-2xl p-6 shadow-xl animate-slide-up" style={{ animationDelay: '0.6s' }}>
           <div className="flex items-start">
             <div className="flex-shrink-0">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                <BarChart3 className="h-6 w-6 text-green-600" />
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-r from-green-400 to-emerald-500">
+                <BarChart3 className="h-6 w-6 text-white" />
               </div>
             </div>
             <div className="ml-4 flex-1">
               <h3 className="text-lg font-semibold text-gray-800">
-                Sprint 2 Completado ✅
+                Sistema de Parking Completo 🎉
               </h3>
               <p className="mt-2 text-sm text-gray-600">
-                Sistema de Gestion de Vehiculos implementado: Registro de entrada/salida, busqueda de vehiculos, 
-                lista de activos e historial estan funcionando correctamente.
+                Plataforma completa con autenticación, gestión de vehículos, control de espacios, 
+                sistema de facturación automática y reportes analíticos. ¡Listo para producción!
               </p>
-              <p className="mt-2 text-sm text-gray-500 font-medium">
-                Proximos sprints: Control de espacios, Facturacion y Reportes.
-              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="px-3 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">✓ Auth & Roles</span>
+                <span className="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">✓ Vehículos</span>
+                <span className="px-3 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">✓ Espacios</span>
+                <span className="px-3 py-1 text-xs font-medium bg-orange-100 text-orange-700 rounded-full">✓ Facturación</span>
+                <span className="px-3 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">✓ Reportes</span>
+              </div>
             </div>
           </div>
         </div>

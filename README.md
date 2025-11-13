@@ -2,11 +2,22 @@
 
 Sistema completo de administración de parqueaderos con autenticación, gestión de vehículos, control de espacios, facturación automática y reportes de ingresos. Plataforma full-stack desarrollada con Node.js/Express/PostgreSQL en el backend y React/Vite/Tailwind en el frontend.
 
-![Status](https://img.shields.io/badge/Status-5%20Sprints%20Completados-success)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![Backend](https://img.shields.io/badge/Backend-Node.js%20%2B%20Express-green)
 ![Frontend](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL-blue)
 ![ORM](https://img.shields.io/badge/ORM-Prisma-informational)
+![Deploy](https://img.shields.io/badge/Deploy-Render%20%2B%20Vercel-blueviolet)
+
+---
+
+## 🌐 Demo en Vivo
+
+- **Frontend**: [system-parking.vercel.app](https://system-parking.vercel.app)
+- **API**: [system-parking-api.onrender.com](https://system-parking-api.onrender.com)
+
+**Credenciales de prueba:**
+- Admin: `admin@parking.com` / `Admin123!`
 
 ---
 
@@ -409,9 +420,30 @@ npm run seed
 
 ---
 
+## 🚀 Deployment a Producción
+
+### Opción 1: Despliegue Rápido
+
+**Backend en Render + Frontend en Vercel + BD PostgreSQL**
+
+Ver guía completa: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+**Resumen rápido:**
+1. **Base de Datos**: Crear PostgreSQL en Render (Free)
+2. **Backend**: Deploy en Render con auto-build
+3. **Frontend**: Deploy en Vercel con un click
+4. **Total**: $0/mes (plan free)
+
+### Opción 2: Un Click Deploy
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+
+---
+
 ## 📚 Documentación
 
-- [Guía de Inicio](GUIA_INICIO.md) - Configuración detallada
+- [**Guía de Deployment**](DEPLOYMENT.md) - Paso a paso para producción ⭐
+- [Guía de Inicio](GUIA_INICIO.md) - Configuración detallada local
 - [Backend README](backend/README.md) - Documentación de la API
 - [Frontend README](frontend/README.md) - Documentación de la UI
 
