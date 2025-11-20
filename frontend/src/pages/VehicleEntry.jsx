@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Car, User, Phone, Mail, MapPin, FileText } from 'lucide-react';
+import { Car, User, Phone, Mail, MapPin, FileText, Camera } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Alert from '../components/common/Alert';
+import CameraCapture from '../components/common/CameraCapture';
 import vehicleService from '../services/vehicleService';
+import { recognizePlate } from '../services/plateRecognitionService';
 
 const VehicleEntry = () => {
   const [formData, setFormData] = useState({
@@ -21,10 +23,102 @@ const VehicleEntry = () => {
   });
   const [alert, setAlert] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [recognitionData, setRecognitionData] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleCapture = async (imageFile) => {
+    setIsScanning(true);
+    setShowCamera(false);
+    
+    try {
+      const result = await recognizePlate(imageFile);
+      
+      if (result.success) {
+        console.log('📥 Datos recibidos de la API:', result.data);
+        setRecognitionData(result.data);
+        
+        // Formatear valores detectados
+        const capitalizeWords = (str) => {
+          if (!str) return '';
+          return str.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          ).join(' ');
+        };
+        
+        // Auto-rellenar formulario con datos detectados
+        const detectedData = {
+          plate: result.data.plate?.toUpperCase() || '',
+          type: result.data.vehicleType || '',
+          color: capitalizeWords(result.data.color) || '',
+          brand: capitalizeWords(result.data.make) || '',
+          model: capitalizeWords(result.data.model) || ''
+        };
+        
+        console.log('🎨 Datos formateados para el formulario:', detectedData);
+        
+        setFormData(prev => ({
+          ...prev,
+          ...detectedData,
+          recognizedBy: 'AI',
+          plateConfidence: result.data.confidence
+        }));
+        
+        // Construir mensaje detallado de lo detectado
+        const confidence = Math.round(result.data.confidence * 100);
+        let detectedFields = [`Placa: ${detectedData.plate}`];
+        if (detectedData.type) detectedFields.push(`Tipo: ${detectedData.type}`);
+        if (detectedData.color) detectedFields.push(`Color: ${detectedData.color}`);
+        if (detectedData.brand) detectedFields.push(`Marca: ${detectedData.brand}`);
+        if (detectedData.model) detectedFields.push(`Modelo: ${detectedData.model}`);
+        
+        let alertType = 'success';
+        let title = '✅ Datos detectados por IA!';
+        let message = `${detectedFields.join(' | ')}`;
+        
+        // Advertencia si falta información del vehículo
+        const missingVehicleInfo = !detectedData.color && !detectedData.brand && !detectedData.model;
+        if (missingVehicleInfo) {
+          message += '\n\n⚠️ Color, marca y modelo no detectados.';
+          message += '\n💡 Razón: Plan gratuito de PlateRecognizer solo detecta placa y tipo.';
+          message += '\n✏️ Ingresa manualmente o actualiza plan en platerecognizer.com';
+          alertType = 'info';
+          title = '✅ Placa y tipo detectados';
+        }
+        
+        if (confidence < 70) {
+          alertType = 'warning';
+          title = '⚠️ Verificación requerida';
+          message += ` (${confidence}% confianza - Verifica antes de guardar)`;
+        } else if (confidence < 85) {
+          message += ` (${confidence}% confianza - Revisa los datos)`;
+        } else if (!missingVehicleInfo) {
+          message += ` (${confidence}% confianza)`;
+        }
+        
+        setAlert({
+          type: alertType,
+          title,
+          message
+        });
+      }
+    } catch (error) {
+      console.error('Error al reconocer placa:', error);
+      const suggestion = error.response?.data?.suggestion;
+      setAlert({
+        type: 'error',
+        title: 'Error al escanear',
+        message: error.response?.data?.message || 'No se pudo reconocer la placa.',
+        suggestion: suggestion || 'Intenta de nuevo o ingresa manualmente.'
+      });
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -105,20 +199,50 @@ const VehicleEntry = () => {
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="Placa *"
-                  type="text"
-                  name="plate"
-                  placeholder="ABC-123"
-                  value={formData.plate}
-                  onChange={handleChange}
-                  required
-                  className="uppercase"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Placa * {recognitionData && formData.plate && (
+                      <span className="text-green-600 text-xs ml-2">
+                        🤖 IA: {Math.round(recognitionData.confidence * 100)}% confianza
+                      </span>
+                    )}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="plate"
+                      placeholder="ABC-123"
+                      value={formData.plate}
+                      onChange={handleChange}
+                      required
+                      className="flex-1 block w-full rounded-lg border-2 border-gray-300 px-4 py-3 uppercase focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCamera(true)}
+                      disabled={isScanning}
+                      className="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all flex items-center gap-2 shadow-lg disabled:opacity-50"
+                      title="Escanear placa con cámara"
+                    >
+                      <Camera className="w-5 h-5" />
+                      {isScanning ? '...' : ''}
+                    </button>
+                  </div>
+                  {isScanning && (
+                    <p className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"></div>
+                      Analizando imagen...
+                    </p>
+                  )}
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tipo de Vehículo *
+                    Tipo de Vehículo * {recognitionData && formData.type && recognitionData.vehicleType && (
+                      <span className="text-green-600 text-xs ml-2">
+                        🤖 Detectado por IA
+                      </span>
+                    )}
                   </label>
                   <select
                     name="type"
@@ -134,32 +258,62 @@ const VehicleEntry = () => {
                   </select>
                 </div>
 
-                <Input
-                  label="Color"
-                  type="text"
-                  name="color"
-                  placeholder="Rojo, Azul, Negro..."
-                  value={formData.color}
-                  onChange={handleChange}
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Color {recognitionData && formData.color && recognitionData.color && (
+                      <span className="text-blue-600 text-xs ml-2">
+                        🎨 IA
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    label="Color"
+                    type="text"
+                    name="color"
+                    placeholder="Rojo, Azul, Negro..."
+                    value={formData.color}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border-2 border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                </div>
 
-                <Input
-                  label="Marca"
-                  type="text"
-                  name="brand"
-                  placeholder="Toyota, Mazda, Honda..."
-                  value={formData.brand}
-                  onChange={handleChange}
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Marca {recognitionData && formData.brand && recognitionData.make && (
+                      <span className="text-purple-600 text-xs ml-2">
+                        🏭 IA
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    label="Marca"
+                    type="text"
+                    name="brand"
+                    placeholder="Toyota, Mazda, Honda..."
+                    value={formData.brand}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border-2 border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                </div>
 
-                <Input
-                  label="Modelo"
-                  type="text"
-                  name="model"
-                  placeholder="2020, Corolla, etc."
-                  value={formData.model}
-                  onChange={handleChange}
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Modelo {recognitionData && formData.model && recognitionData.model && (
+                      <span className="text-indigo-600 text-xs ml-2">
+                        🚗 IA
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    label="Modelo"
+                    type="text"
+                    name="model"
+                    placeholder="2020, Corolla, etc."
+                    value={formData.model}
+                    onChange={handleChange}
+                    className="block w-full rounded-lg border-2 border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  />
+                </div>
 
                 <Input
                   label="Espacio de Parqueo"
@@ -256,6 +410,14 @@ const VehicleEntry = () => {
           </form>
         </div>
       </div>
+
+      {/* Cámara Modal */}
+      {showCamera && (
+        <CameraCapture
+          onCapture={handleCapture}
+          onClose={() => setShowCamera(false)}
+        />
+      )}
     </div>
   );
 };

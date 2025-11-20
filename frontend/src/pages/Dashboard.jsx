@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Spinner from '../components/common/Spinner';
 import vehicleService from '../services/vehicleService';
-import { Car, LogIn, Users, BarChart3, MapPin, RefreshCcw, DollarSign } from 'lucide-react';
+import { Car, LogIn, Users, BarChart3, MapPin, RefreshCcw, DollarSign, ScanLine } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -140,6 +140,14 @@ const Dashboard = () => {
               >
                 <BarChart3 className="w-8 h-8 mb-3 mx-auto" />
                 <p className="font-semibold">Ver Activos</p>
+              </Link>
+
+              <Link
+                to="/exit-control"
+                className="p-6 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl text-white hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center"
+              >
+                <ScanLine className="w-8 h-8 mb-3 mx-auto" />
+                <p className="font-semibold">Control Salida AI</p>
               </Link>
 
               <Link

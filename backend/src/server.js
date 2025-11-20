@@ -7,6 +7,7 @@ import parkingRoutes from "./routes/parkingRoutes.js";
 import rateRoutes from "./routes/rateRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
+import plateRecognitionRoutes from "./routes/plateRecognitionRoutes.js";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
       rates: "/api/rates",
       payments: "/api/payments",
       reports: "/api/reports",
+      plateRecognition: "/api/plate-recognition",
       docs: "/api/docs"
     }
   });
@@ -53,6 +55,9 @@ app.use("/api/payments", paymentRoutes);
 
 // Rutas de reportes
 app.use("/api/reports", reportRoutes);
+
+// Rutas de reconocimiento de placas
+app.use("/api/plate-recognition", plateRecognitionRoutes);
 
 // Manejo de rutas no encontradas
 app.use("*", (req, res) => {

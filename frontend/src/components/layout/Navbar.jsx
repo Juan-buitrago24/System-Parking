@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Menu, X, Car, LogIn, ParkingCircle, List, DollarSign, BarChart3 } from 'lucide-react';
+import { LogOut, User, Menu, X, Car, LogIn, ParkingCircle, List, DollarSign, BarChart3, ScanLine } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
@@ -43,6 +43,11 @@ const Navbar = () => {
             <Link to="/vehicles/active" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
               <List className="w-4 h-4 mr-1" />
               Activos
+            </Link>
+
+            <Link to="/exit-control" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+              <ScanLine className="w-4 h-4 mr-1" />
+              Control Salida
             </Link>
 
             <Link to="/reports" className="px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex items-center">

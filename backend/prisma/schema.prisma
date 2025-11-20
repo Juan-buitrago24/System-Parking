@@ -116,6 +116,13 @@ model Vehicle {
   parkingSpaceId  Int? // FK opcional hacia ParkingSpace
   parkingSpaceRel ParkingSpace? @relation(fields: [parkingSpaceId], references: [id])
   
+  // Reconocimiento de placas con IA
+  entryPhoto       String? // URL/path de la foto de entrada
+  exitPhoto        String? // URL/path de la foto de salida
+  plateConfidence  Float?  // Confianza de la IA (0-100)
+  recognizedBy     String? // 'AI' o 'MANUAL'
+  detectedVehicleType String? // Tipo detectado por IA
+  
   // Estado
   status       VehicleStatus @default(ACTIVO)
   

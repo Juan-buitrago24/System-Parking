@@ -18,6 +18,7 @@ import ActiveVehicles from './pages/ActiveVehicles';
 import SpacesManagement from './pages/SpacesManagement';
 import RateManagement from './pages/RateManagement';
 import Reports from './pages/Reports';
+import ExitControl from './pages/ExitControl';
 
 function App() {
   return (
@@ -72,6 +73,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ActiveVehicles />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/exit-control"
+            element={
+              <PrivateRoute>
+                <ExitControl />
               </PrivateRoute>
             }
           />

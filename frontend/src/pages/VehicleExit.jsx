@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LogOut, Search, DollarSign } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
@@ -8,6 +9,7 @@ import vehicleService from '../services/vehicleService';
 import paymentService from '../services/paymentService';
 
 const VehicleExit = () => {
+  const [searchParams] = useSearchParams();
   const [plate, setPlate] = useState('');
   const [vehicle, setVehicle] = useState(null);
   const [paymentInfo, setPaymentInfo] = useState(null);
@@ -19,6 +21,19 @@ const VehicleExit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Pre-llenar placa si viene desde control de salida
+  useEffect(() => {
+    const plateFromUrl = searchParams.get('plate');
+    if (plateFromUrl) {
+      setPlate(plateFromUrl.toUpperCase());
+      // Auto-buscar el vehículo
+      setTimeout(() => {
+        const form = document.querySelector('form');
+        if (form) form.requestSubmit();
+      }, 100);
+    }
+  }, [searchParams]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
