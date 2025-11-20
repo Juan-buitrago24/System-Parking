@@ -1,0 +1,90 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Security Demo - System Parking",
+  "collectionId": "security-demo",
+  "dateExported": "2025-11-12",
+  "version": "1.0",
+  "folders": [
+    {
+      "name": "1. Brute Force Attack",
+      "requests": []
+    },
+    {
+      "name": "2. Account Enumeration",
+      "requests": []
+    }
+  ],
+  "requests": [
+    {
+      "name": "Demo 1: Intento de Login Fallido (Repetir 20 veces)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"admin@parking.com\",\n  \"password\": \"password123\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "folder": "1. Brute Force Attack"
+    },
+    {
+      "name": "Demo 2: Verificar si Email Existe (Register)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"admin@parking.com\",\n  \"password\": \"Test123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "folder": "2. Account Enumeration"
+    },
+    {
+      "name": "Demo 2b: Email que NO Existe",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"noexiste12345@test.com\",\n  \"password\": \"Test123!\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\"\n}",
+        "form": []
+      },
+      "tests": [],
+      "folder": "2. Account Enumeration"
+    },
+    {
+      "name": "Demo 3: Login con Email Inválido (Sin validación)",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"esto-no-es-un-email\",\n  \"password\": \"test\"\n}",
+        "form": []
+      },
+      "tests": []
+    }
+  ]
+}

@@ -80,6 +80,7 @@ RESEND_FROM_EMAIL=System Parking <onboarding@resend.dev>
 FRONTEND_URL=https://tu-frontend.vercel.app
 PORT=10000
 NODE_ENV=production
+PLATE_RECOGNIZER_TOKEN=tu_token_platerecognizer_opcional
 ```
 
 **Importante:**
@@ -87,6 +88,10 @@ NODE_ENV=production
 - `JWT_SECRET`: Genera uno nuevo seguro (mínimo 32 caracteres)
 - `RESEND_API_KEY`: Tu API key de Resend
 - `FRONTEND_URL`: Lo agregarás después del deploy del frontend
+- `PLATE_RECOGNIZER_TOKEN`: (OPCIONAL) Tu token de PlateRecognizer para reconocimiento de placas con IA
+  - Sin este token, el sistema funciona pero solo con entrada manual
+  - Plan gratuito: 2,500 escaneos/mes, detecta placa + tipo de vehículo
+  - Regístrate en: https://platerecognizer.com
 
 ### Paso 4: Deploy
 
